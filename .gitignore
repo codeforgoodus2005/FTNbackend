@@ -1,3 +1,5 @@
 #  .env     current version needs this file Satvik is looking into this 02/25/24 15:45 bv
 node_modules/
 package-lock.json
+.idea/
+.vscode/
