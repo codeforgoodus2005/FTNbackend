@@ -18,7 +18,7 @@ The database module establishes a MySQL connection pool for efficient database m
 The server initializes on port 3001 with comprehensive CORS configuration allowing cross-origin requests. It integrates with the **Google Drive API** using a service account for file management. File uploads are restricted to 5MB using Multer's memory storage.
 
 Key features:
-- Google Drive API integration for file storage and retrieval
+- Google Drive API integration for file storage and retrieval (unused)
 - File download endpoint with proper headers and metadata
 - CORS middleware for cross-origin compatibility
 - Multer file upload handling with size limits
@@ -42,8 +42,12 @@ Key npm packages include:
 - **Multer** - File uploads
 - **Google APIs** - Drive integration
 - **MySQL** - Database queries
-- **Bcrypt** - Password hashing
+- **Bcrypt** - Password hashing (Unused). Instead, we use base64 encoding for passwords.
 - **CORS** - Cross-origin support
+
+Note: Windows and Linux users can use this tool to encode mysql password
+https://base64.guru/converter/encode
+This password is used in the .env file as MYSQL_PASSWORD, and it will be decoded in the db.js file before being used to connect to the database.
 
 Configuration uses environment variables from a `.env` file for sensitive information.# FTNbackend
 For the Need Foundation Backend
