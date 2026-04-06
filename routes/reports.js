@@ -3,12 +3,11 @@ const express = require('express')
 const router = express.Router()
 const connection = require('../db.js') // Import the database connection
 
-/*
+/* for single api call 
 router.post('/ftnreport', async (req, res) => {
   if (connection) {
     connection.query(
       //`CALL sp_build_phase2_arrow_kpi(?);`,
-      //`select * from phase2_arrow_kpi_output;`,
       `SELECT  
         account_id , 
         full_name , 
@@ -36,6 +35,7 @@ router.post('/ftnreport', async (req, res) => {
       const [result1] = await connection.promise().query('CALL sp_update_805_totals_and_award();');
       const [result2] =await connection.promise().query('CALL sp_update_805_engagement_2023_2024();');
       const [result3] = await connection.promise().query('CALL sp_update_805_engagement_2025();');
+      const [result4] = await connection.promise().query('CALL sp_update_805_engagement_2025_2026();');
       
       // Merge all 3 results by Account ID
       const merged = result1[0].map(row => {
