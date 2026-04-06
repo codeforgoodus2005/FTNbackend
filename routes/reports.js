@@ -3,25 +3,18 @@ const express = require('express')
 const router = express.Router()
 const connection = require('../db.js') // Import the database connection
 
-router.post('/allvolunteer', async (req, res) => {
+/*
+router.post('/ftnreport', async (req, res) => {
   if (connection) {
     connection.query(
-      `SELECT
-          v.VolunteerID,
-          CONCAT(v.FirstName, ' ', v.LastName) AS VolunteerName,
-          v.Email,
-          v.AreaOfInterest,
-          v.HoursLogged,
-          COUNT(ep.ParticipationID) AS ParticipatedEventsCount,
-          MAX(v.DonorFlag) AS DonorStatus
-        FROM
-          Volunteer v
-        LEFT JOIN
-          EventParticipation ep ON v.VolunteerID = ep.VolunteerID
-        GROUP BY
-          v.VolunteerID
-        ORDER BY
-          ParticipatedEventsCount DESC;`,
+      //`CALL sp_build_phase2_arrow_kpi(?);`,
+      //`select * from phase2_arrow_kpi_output;`,
+      `SELECT  
+        account_id , 
+        full_name , 
+        attendance_status , 
+        event_date 
+      FROM phase2_arrow_kpi_output;`,
       (error, results) => {
         if (error) {
           console.error('Error querying volunteer:', error)
@@ -34,6 +27,31 @@ router.post('/allvolunteer', async (req, res) => {
   } else {
     res.status(500).json({ error: 'Database connection failed' })
   }
+})
+*/
+
+router.post('/ftnreport', async (req, res) => {
+  if (connection) {
+    try{
+      const [result1] = await connection.promise().query('CALL sp_update_805_totals_and_award();');
+      const [result2] =await connection.promise().query('CALL sp_update_805_engagement_2023_2024();');
+      const [result3] = await connection.promise().query('CALL sp_update_805_engagement_2025();');
+      
+      // Merge all 3 results by Account ID
+      const merged = result1[0].map(row => {
+        const r2 = result2[0].find(r => r['Account ID'] === row['Account ID']) || {};
+        const r3 = result3[0].find(r => r['Account ID'] === row['Account ID']) || {};
+        return { ...row, ...r2, ...r3 };
+      });
+
+      res.status(200).json(merged);
+      //res.status(200).json(allVolunteersData);
+    
+  } catch (error) {
+    console.error('Error querying volunteer:', error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+}
 })
 
 router.get('/get_eventdetails', (req, res) => {
